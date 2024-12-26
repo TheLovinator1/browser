@@ -62,6 +62,7 @@ class Browser(QMainWindow):
         view = QWebEngineView()
         view.setUrl(url)
         view.urlChanged.connect(self.update_url_bar)
+        view.titleChanged.connect(lambda title: self.update_tab_and_window_title(view, title))
 
         tab_index: int = self.tabs.addTab(view, label)
         self.tabs.setCurrentIndex(tab_index)
@@ -79,6 +80,14 @@ class Browser(QMainWindow):
         current_browser: QWidget = self.tabs.widget(index)
         if isinstance(current_browser, QWebEngineView):
             self.setWindowTitle(current_browser.page().title())
+
+    def update_tab_and_window_title(self, view: QWebEngineView, title: str) -> None:
+        """Update the tab and window title based on the web page title."""
+        index: int = self.tabs.indexOf(view)
+        if index != -1:
+            self.tabs.setTabText(index, title)
+            if self.tabs.currentWidget() == view:
+                self.setWindowTitle(title)
 
     def create_shortcuts(self) -> None:
         """Create keyboard shortcuts for various actions."""
