@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+import contextlib
+from typing import TYPE_CHECKING, cast
 
 from PySide6.QtGui import QAction, QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QToolBar, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QMenuBar, QMessageBox, QTabWidget, QToolBar, QWidget
 
 if TYPE_CHECKING:
     from PySide6.QtCore import QSize
@@ -30,6 +31,7 @@ class Browser(QMainWindow):
 
         self.create_toolbar()
         self.create_shortcuts()
+        self.create_menu()
 
     def set_window_title(self) -> None:
         """Set the title of the window to 'web browser'.
@@ -37,7 +39,8 @@ class Browser(QMainWindow):
         This is the default title of the window. When the user opens a new tab,
         the title of the window will be updated to the title of the web page.
         """
-        self.setWindowTitle("web browser")
+        with contextlib.suppress(Exception):
+            self.setWindowTitle("web browser")
 
     def resize_and_maximize_window(self) -> None:
         """Resize the window to 80% of the screen size and maximize it."""
@@ -47,10 +50,10 @@ class Browser(QMainWindow):
 
     def add_new_tab(self, url: str, label: str) -> None:
         """Add a new tab with the given URL and label."""
-        browser = QWebEngineView()
-        browser.setUrl(url)
+        view = QWebEngineView()
+        view.setUrl(url)
 
-        tab_index: int = self.tabs.addTab(browser, label)
+        tab_index: int = self.tabs.addTab(view, label)
         self.tabs.setCurrentIndex(tab_index)
 
     def close_current_tab(self, index: int) -> None:
@@ -86,6 +89,49 @@ class Browser(QMainWindow):
 
         close_browser_shortcut = QShortcut(QKeySequence("Ctrl+Q"), self)
         close_browser_shortcut.activated.connect(self.close)
+
+        reload_shortcut = QShortcut(QKeySequence("Ctrl+R"), self)
+        reload_shortcut.activated.connect(
+            lambda: cast(QWebEngineView, self.tabs.currentWidget()).reload()
+            if isinstance(self.tabs.currentWidget(), QWebEngineView)
+            else None
+        )
+
+    def create_menu(self) -> None:
+        """Create the menu bar with a help menu."""
+        menu_bar = QMenuBar(self)
+        self.setMenuBar(menu_bar)
+
+        help_menu: QMenu = menu_bar.addMenu("Help")
+
+        shortcuts_action = QAction("Keyboard Shortcuts", self)
+        shortcuts_action.triggered.connect(self.show_shortcuts)
+        help_menu.addAction(shortcuts_action)
+
+    def show_shortcuts(self) -> None:
+        """Show a message box with the keyboard shortcuts silently."""
+        import logging
+
+        logging.info("Displaying keyboard shortcuts silently.")
+        shortcuts: str = (
+            "Ctrl+T: Open a new tab\n"
+            "Ctrl+W: Close the current tab\n"
+            "Ctrl+Q: Close the browser\n"
+            "Ctrl+R: Reload the current tab"
+        )
+        try:
+            self.display_keyboard_shortcuts(shortcuts)
+        except Exception:
+            logging.exception("Failed to display shortcuts")
+
+    def display_keyboard_shortcuts(self, shortcuts: str) -> None:
+        """Display the keyboard shortcuts in a message box."""
+        msg: QMessageBox = QMessageBox(self)
+        msg.setWindowTitle("Keyboard Shortcuts")
+        msg.setIcon(QMessageBox.Icon.NoIcon)
+        msg.setText(shortcuts)
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg.exec()
 
 
 def main() -> None:
