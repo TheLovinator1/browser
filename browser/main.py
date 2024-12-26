@@ -26,7 +26,7 @@ class Browser(QMainWindow):
 
         self.tabs = QTabWidget()
         self.tabs.setDocumentMode(True)
-        self.tabs.tabCloseRequested.connect(self.close_current_tab)
+        self.tabs.tabCloseRequested.disconnect()
         self.tabs.currentChanged.connect(self.update_window_title)
         self.tabs.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.tabs.customContextMenuRequested.connect(self.show_context_menu)
