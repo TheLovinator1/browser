@@ -16,7 +16,7 @@
             "name": "Run browser",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/src/browser/main.py",
+            "program": "${workspaceFolder}\\browser\\main.py",
         }
     ]
 }

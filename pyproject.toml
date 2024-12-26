@@ -61,7 +61,19 @@ line-length = 120
     "S101",    # asserts allowed in tests...
     "S311",    # Standard pseudo-random generators are not suitable for cryptographic purposes
 ]
-
 "**/migrations/**" = [
     "ALL", # Ignore all lint rules
 ]
+
+[tool.pytest.ini_options]
+# Where our Django settings are located.
+DJANGO_SETTINGS_MODULE = "config.settings"
+
+# Enable logging in the console.
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+testpaths = ["tests"]
+# python_files = ["*_test.py"]

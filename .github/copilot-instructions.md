@@ -21,13 +21,12 @@
     .
     ├── .github
     │   └── copilot-instructions.md
-    ├── src
-    │   ├── api # Django API
-    │   │   ├── config
-    │   │   └── manage.py
-    │   ├── browser # GUI
-    │   │   └── main.py
-    │   └── tests
+    ├── api # Django API
+    │   ├── config
+    │   └── manage.py
+    ├── browser # GUI
+    │   └── main.py
+    ├── tests
     ├── manage.py
     ├── pyproject.toml
     └── README.md

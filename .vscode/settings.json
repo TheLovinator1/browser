@@ -2,15 +2,21 @@
     "cSpell.words": [
         "appauthor",
         "appname",
+        "asctime",
         "asgi",
         "automerge",
+        "autouse",
         "docstrings",
         "dotenv",
         "isort",
+        "levelname",
         "Lovinator",
         "platformdirs",
         "pydocstyle",
         "pyproject",
-        "pyside"
-    ]
+        "pyside",
+        "testpaths",
+        "urandom"
+    ],
+    "python.analysis.typeCheckingMode": "basic"
 }

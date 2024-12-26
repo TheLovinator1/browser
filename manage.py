@@ -6,7 +6,6 @@ from __future__ import annotations
 import logging
 import os
 import sys
-from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
 logger: logging.Logger = logging.getLogger(__name__)
@@ -14,8 +13,7 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 def main() -> None:
     """Run administrative tasks."""
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.api.config.settings")
-    sys.path.append(str(Path(__file__).resolve().parent / "src" / "api"))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
     try:
         from django.core.management import execute_from_command_line
