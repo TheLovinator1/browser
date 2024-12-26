@@ -3,9 +3,10 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, cast
 
+from PySide6.QtCore import QUrl
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QToolButton, QWidget
+from PySide6.QtWidgets import QApplication, QLineEdit, QMainWindow, QTabWidget, QToolBar, QToolButton, QWidget
 
 if TYPE_CHECKING:
     from PySide6.QtCore import QSize
@@ -27,6 +28,10 @@ class Browser(QMainWindow):
 
         self.setCentralWidget(self.tabs)
 
+        self.url_bar = QLineEdit()
+        self.url_bar.returnPressed.connect(self.navigate_to_url)
+
+        self.create_toolbar()
         self.add_new_tab("https://duckduckgo.com", "New Tab")
 
         self.create_shortcuts()
@@ -51,6 +56,7 @@ class Browser(QMainWindow):
         """Add a new tab with the given URL and label."""
         view = QWebEngineView()
         view.setUrl(url)
+        view.urlChanged.connect(self.update_url_bar)
 
         tab_index: int = self.tabs.addTab(view, label)
         self.tabs.setCurrentIndex(tab_index)
@@ -99,6 +105,23 @@ class Browser(QMainWindow):
         self.tabs.tabBar().tabCloseRequested.connect(self.close_current_tab)
 
         self.tabs.setCornerWidget(new_tab_button)
+
+    def create_toolbar(self) -> None:
+        """Create the toolbar with the URL bar."""
+        toolbar = QToolBar("Navigation")
+        self.addToolBar(toolbar)
+        toolbar.addWidget(self.url_bar)
+
+    def navigate_to_url(self) -> None:
+        """Navigate to the URL entered in the URL bar."""
+        current_browser: QWidget = self.tabs.currentWidget()
+        if isinstance(current_browser, QWebEngineView):
+            url: str = self.url_bar.text()
+            current_browser.setUrl(url)
+
+    def update_url_bar(self, url: QUrl) -> None:
+        """Update the URL bar with the current URL."""
+        self.url_bar.setText(url.toString())
 
 
 def main() -> None:
