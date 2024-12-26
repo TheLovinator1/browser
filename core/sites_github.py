@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from functools import cache
 from typing import TYPE_CHECKING
 
 from django.conf import settings
@@ -16,6 +17,7 @@ auth = Auth.Token(settings.GITHUB_ACCESS_TOKEN)
 logger.info("Github auth token set %s", auth)
 
 
+@cache
 def get_repo_contents(username: str, repo_name: str) -> list[ContentFile] | ContentFile:
     """Get all of the contents of the root directory of the repository.
 
