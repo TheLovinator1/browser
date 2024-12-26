@@ -1,14 +1,18 @@
 from __future__ import annotations
 
 import contextlib
+import logging
 from typing import TYPE_CHECKING, cast
 
+from PySide6.QtCore import Qt
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QLineEdit, QMainWindow, QTabWidget, QToolBar, QToolButton, QWidget
+from PySide6.QtWidgets import QApplication, QLineEdit, QMainWindow, QMenu, QTabWidget, QToolBar, QToolButton, QWidget
 
 if TYPE_CHECKING:
-    from PySide6.QtCore import QSize, QUrl
+    from PySide6.QtCore import QPoint, QSize, QUrl
+
+logging.basicConfig(level=logging.INFO)
 
 
 class Browser(QMainWindow):
@@ -24,6 +28,8 @@ class Browser(QMainWindow):
         self.tabs.setDocumentMode(True)
         self.tabs.tabCloseRequested.connect(self.close_current_tab)
         self.tabs.currentChanged.connect(self.update_window_title)
+        self.tabs.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.tabs.customContextMenuRequested.connect(self.show_context_menu)
 
         self.setCentralWidget(self.tabs)
 
@@ -121,6 +127,13 @@ class Browser(QMainWindow):
     def update_url_bar(self, url: QUrl) -> None:
         """Update the URL bar with the current URL."""
         self.url_bar.setText(url.toString())
+
+    def show_context_menu(self, position: QPoint) -> None:
+        """Show the context menu on right-click."""
+        context_menu = QMenu(self)
+        close_tab_action = context_menu.addAction("Close Tab")
+        close_tab_action.triggered.connect(lambda: self.close_current_tab(self.tabs.tabBar().tabAt(position)))
+        context_menu.exec(self.tabs.mapToGlobal(position))
 
 
 def main() -> None:
