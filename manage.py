@@ -3,13 +3,20 @@
 
 from __future__ import annotations
 
+import logging
 import os
 import sys
+from pathlib import Path
+
+logging.basicConfig(level=logging.INFO)
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 def main() -> None:
     """Run administrative tasks."""
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "src.api.config.settings")
+    sys.path.append(str(Path(__file__).resolve().parent / "src" / "api"))
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -18,6 +25,7 @@ def main() -> None:
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         )
+        logger.exception(msg)
         raise ImportError(msg) from exc
     execute_from_command_line(sys.argv)
 

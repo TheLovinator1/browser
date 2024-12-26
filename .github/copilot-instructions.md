@@ -14,6 +14,7 @@
 - Write docstrings for all Python functions and classes.
 - Prefetch related objects in Django ORM queries.
 - Use database indexes in Django models. Our database is Sqlite.
+- Use Path lib for file paths in Python code examples.
 - The project structure is the following:
 
     ```text
