@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import contextlib
 import logging
 from typing import TYPE_CHECKING, cast
 
@@ -21,7 +20,6 @@ class Browser(QMainWindow):
     def __init__(self) -> None:
         """Initialize the browser."""
         super().__init__()
-        self.set_window_title()
         self.resize_and_maximize_window()
 
         self.tabs = QTabWidget()
@@ -41,15 +39,6 @@ class Browser(QMainWindow):
 
         self.create_shortcuts()
         self.add_new_tab_button()
-
-    def set_window_title(self) -> None:
-        """Set the title of the window to 'web browser'.
-
-        This is the default title of the window. When the user opens a new tab,
-        the title of the window will be updated to the title of the web page.
-        """
-        with contextlib.suppress(Exception):
-            self.setWindowTitle("web browser")
 
     def resize_and_maximize_window(self) -> None:
         """Resize the window to 80% of the screen size and maximize it."""
