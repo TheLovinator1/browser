@@ -3,6 +3,7 @@
         "appauthor",
         "appname",
         "asgi",
+        "automerge",
         "docstrings",
         "dotenv",
         "isort",
