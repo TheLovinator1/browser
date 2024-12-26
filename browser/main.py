@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from PySide6.QtGui import QAction
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QToolBar, QWidget
 
 if TYPE_CHECKING:
     from PySide6.QtCore import QSize
@@ -18,14 +19,16 @@ class Browser(QMainWindow):
         self.set_window_title()
         self.resize_and_maximize_window()
 
-        central_widget = QWidget()
-        layout = QVBoxLayout(central_widget)
+        self.tabs = QTabWidget()
+        self.tabs.setDocumentMode(True)
+        self.tabs.tabCloseRequested.connect(self.close_current_tab)
+        self.tabs.currentChanged.connect(self.update_window_title)
 
-        self.browser = QWebEngineView()
-        self.browser.setUrl("https://duckduckgo.com")
+        self.setCentralWidget(self.tabs)
 
-        layout.addWidget(self.browser)
-        self.setCentralWidget(central_widget)
+        self.add_new_tab("https://duckduckgo.com", "New Tab")
+
+        self.create_toolbar()
 
     def set_window_title(self) -> None:
         """Set the title of the window to 'web browser'.
@@ -40,6 +43,37 @@ class Browser(QMainWindow):
         screensize: QSize = self.screen().size() * self.screen().devicePixelRatio()
         self.resize(int(screensize.width() * 0.8), int(screensize.height() * 0.8))
         self.showMaximized()
+
+    def add_new_tab(self, url: str, label: str) -> None:
+        """Add a new tab with the given URL and label."""
+        browser = QWebEngineView()
+        browser.setUrl(url)
+
+        tab_index: int = self.tabs.addTab(browser, label)
+        self.tabs.setCurrentIndex(tab_index)
+
+    def close_current_tab(self, index: int) -> None:
+        """Close the tab at the given index."""
+        min_tabs = 2
+        if self.tabs.count() < min_tabs:
+            return
+
+        self.tabs.removeTab(index)
+
+    def update_window_title(self, index: int) -> None:
+        """Update the window title based on the current tab."""
+        current_browser: QWidget = self.tabs.widget(index)
+        if isinstance(current_browser, QWebEngineView):
+            self.setWindowTitle(current_browser.page().title())
+
+    def create_toolbar(self) -> None:
+        """Create the toolbar with navigation actions."""
+        toolbar = QToolBar("Navigation")
+        self.addToolBar(toolbar)
+
+        new_tab_action = QAction("New Tab", self)
+        new_tab_action.triggered.connect(lambda: self.add_new_tab("https://duckduckgo.com", "New Tab"))
+        toolbar.addAction(new_tab_action)
 
 
 def main() -> None:
