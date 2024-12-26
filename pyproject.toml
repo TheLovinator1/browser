@@ -9,7 +9,12 @@ requires-python = ">=3.12"
 dependencies = ["platformdirs", "pyside6>=6.8.1,!=6.8.1.1"]
 
 [dependency-groups]
-dev = ["pre-commit", "pytest", "pytest-django", "ruff"]
+dev = [
+    "pre-commit",
+    "pytest",
+    "pytest-django",
+    "ruff",
+]
 api = ["django>=5.1.4"]
 
 # https://docs.astral.sh/ruff/settings/
