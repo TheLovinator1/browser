@@ -1,9 +1,15 @@
 {
     "cSpell.words": [
+        "appauthor",
+        "appname",
+        "asgi",
         "docstrings",
+        "dotenv",
         "isort",
+        "Lovinator",
         "platformdirs",
         "pydocstyle",
+        "pyproject",
         "pyside"
     ]
 }
