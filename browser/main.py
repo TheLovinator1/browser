@@ -3,9 +3,9 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, cast
 
-from PySide6.QtGui import QAction, QKeySequence, QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QMenuBar, QMessageBox, QTabWidget, QToolBar, QWidget
+from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QToolButton, QWidget
 
 if TYPE_CHECKING:
     from PySide6.QtCore import QSize
@@ -29,9 +29,8 @@ class Browser(QMainWindow):
 
         self.add_new_tab("https://duckduckgo.com", "New Tab")
 
-        self.create_toolbar()
         self.create_shortcuts()
-        self.create_menu()
+        self.add_new_tab_button()
 
     def set_window_title(self) -> None:
         """Set the title of the window to 'web browser'.
@@ -70,15 +69,6 @@ class Browser(QMainWindow):
         if isinstance(current_browser, QWebEngineView):
             self.setWindowTitle(current_browser.page().title())
 
-    def create_toolbar(self) -> None:
-        """Create the toolbar with navigation actions."""
-        toolbar = QToolBar("Navigation")
-        self.addToolBar(toolbar)
-
-        new_tab_action = QAction("New Tab", self)
-        new_tab_action.triggered.connect(lambda: self.add_new_tab("https://duckduckgo.com", "New Tab"))
-        toolbar.addAction(new_tab_action)
-
     def create_shortcuts(self) -> None:
         """Create keyboard shortcuts for various actions."""
         close_tab_shortcut = QShortcut(QKeySequence("Ctrl+W"), self)
@@ -97,41 +87,18 @@ class Browser(QMainWindow):
             else None
         )
 
-    def create_menu(self) -> None:
-        """Create the menu bar with a help menu."""
-        menu_bar = QMenuBar(self)
-        self.setMenuBar(menu_bar)
+    def add_new_tab_button(self) -> None:
+        """Add a new tab button to the right of the tabs."""
+        new_tab_button = QToolButton(self)
+        new_tab_button.setText("+")
+        new_tab_button.clicked.connect(lambda: self.add_new_tab("https://duckduckgo.com", "New Tab"))
+        self.tabs.setTabBarAutoHide(False)
+        self.tabs.setTabsClosable(True)
+        self.tabs.tabBar().setMovable(True)
+        self.tabs.tabBar().setTabsClosable(True)
+        self.tabs.tabBar().tabCloseRequested.connect(self.close_current_tab)
 
-        help_menu: QMenu = menu_bar.addMenu("Help")
-
-        shortcuts_action = QAction("Keyboard Shortcuts", self)
-        shortcuts_action.triggered.connect(self.show_shortcuts)
-        help_menu.addAction(shortcuts_action)
-
-    def show_shortcuts(self) -> None:
-        """Show a message box with the keyboard shortcuts silently."""
-        import logging
-
-        logging.info("Displaying keyboard shortcuts silently.")
-        shortcuts: str = (
-            "Ctrl+T: Open a new tab\n"
-            "Ctrl+W: Close the current tab\n"
-            "Ctrl+Q: Close the browser\n"
-            "Ctrl+R: Reload the current tab"
-        )
-        try:
-            self.display_keyboard_shortcuts(shortcuts)
-        except Exception:
-            logging.exception("Failed to display shortcuts")
-
-    def display_keyboard_shortcuts(self, shortcuts: str) -> None:
-        """Display the keyboard shortcuts in a message box."""
-        msg: QMessageBox = QMessageBox(self)
-        msg.setWindowTitle("Keyboard Shortcuts")
-        msg.setIcon(QMessageBox.Icon.NoIcon)
-        msg.setText(shortcuts)
-        msg.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg.exec()
+        self.tabs.setCornerWidget(new_tab_button)
 
 
 def main() -> None:
