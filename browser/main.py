@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from PySide6.QtGui import QAction
+from PySide6.QtGui import QAction, QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QToolBar, QWidget
 
@@ -29,6 +29,7 @@ class Browser(QMainWindow):
         self.add_new_tab("https://duckduckgo.com", "New Tab")
 
         self.create_toolbar()
+        self.create_shortcuts()
 
     def set_window_title(self) -> None:
         """Set the title of the window to 'web browser'.
@@ -74,6 +75,17 @@ class Browser(QMainWindow):
         new_tab_action = QAction("New Tab", self)
         new_tab_action.triggered.connect(lambda: self.add_new_tab("https://duckduckgo.com", "New Tab"))
         toolbar.addAction(new_tab_action)
+
+    def create_shortcuts(self) -> None:
+        """Create keyboard shortcuts for various actions."""
+        close_tab_shortcut = QShortcut(QKeySequence("Ctrl+W"), self)
+        close_tab_shortcut.activated.connect(lambda: self.close_current_tab(self.tabs.currentIndex()))
+
+        new_tab_shortcut = QShortcut(QKeySequence("Ctrl+T"), self)
+        new_tab_shortcut.activated.connect(lambda: self.add_new_tab("https://duckduckgo.com", "New Tab"))
+
+        close_browser_shortcut = QShortcut(QKeySequence("Ctrl+Q"), self)
+        close_browser_shortcut.activated.connect(self.close)
 
 
 def main() -> None:
