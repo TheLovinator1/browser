@@ -1,5 +1,9 @@
 {
     "cSpell.words": [
+        "docstrings",
+        "isort",
+        "platformdirs",
+        "pydocstyle",
         "pyside"
     ]
 }
