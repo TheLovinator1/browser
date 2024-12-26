@@ -1,0 +1,9 @@
+[project]
+name = "browser"
+version = "0.1.0"
+description = "Fox fucker, chrome choker, edge ender, and safari slayer."
+readme = "README.md"
+requires-python = ">=3.12"
+
+# https://github.com/astral-sh/uv/issues/10056
+dependencies = ["pyside6>=6.8.1,!=6.8.1.1"]
