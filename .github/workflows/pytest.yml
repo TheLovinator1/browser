@@ -4,8 +4,8 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *' # Run every day at midnight
+  # schedule:
+  #   - cron: '0 0 * * *' # Run every day at midnight
 
 env:
   DJANGO_SECRET_KEY: "abc123"
@@ -13,7 +13,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
