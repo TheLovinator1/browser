@@ -3,13 +3,12 @@ from __future__ import annotations
 import contextlib
 from typing import TYPE_CHECKING, cast
 
-from PySide6.QtCore import QUrl
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from PySide6.QtWidgets import QApplication, QLineEdit, QMainWindow, QTabWidget, QToolBar, QToolButton, QWidget
 
 if TYPE_CHECKING:
-    from PySide6.QtCore import QSize
+    from PySide6.QtCore import QSize, QUrl
 
 
 class Browser(QMainWindow):
