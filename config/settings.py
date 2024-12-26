@@ -12,6 +12,11 @@ logger: logging.Logger = logging.getLogger(__name__)
 
 load_dotenv(verbose=True)
 
+GITHUB_ACCESS_TOKEN: str = os.getenv("GITHUB_ACCESS_TOKEN", default="")
+if not GITHUB_ACCESS_TOKEN:
+    msg = "GITHUB_ACCESS_TOKEN not set"
+    raise ValueError(msg)
+
 BASE_DIR: Path = Path(__file__).resolve().parent.parent
 DATA_DIR: Path = Path(user_data_dir(appname="browser_api", appauthor="TheLovinator", roaming=True, ensure_exists=True))
 SECRET_KEY: str = os.getenv("DJANGO_SECRET_KEY", default="")
